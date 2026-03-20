@@ -40,29 +40,36 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-heading font-black text-[4rem] leading-[0.85] sm:text-7xl md:text-8xl lg:text-[140px] tracking-tighter mb-12 md:mb-16 w-full uppercase"
+          className="font-heading font-black text-[4rem] leading-[0.85] sm:text-7xl md:text-8xl lg:text-[120px] tracking-tighter mb-6 md:mb-8 w-full uppercase"
         >
-          WE MAKE NOISE<br />
-          <span className="text-neon-green dot-stroke text-[5rem] sm:text-8xl md:text-9xl lg:text-[150px] align-middle leading-none inline-block -mt-2 md:-mt-4 mx-2 md:mx-4">•</span> YOU MAKE PROFIT
+          WE DON'T JUST MAKE NOISE<br />
+          <span className="text-neon-green dot-stroke text-[5rem] sm:text-8xl md:text-9xl lg:text-[130px] align-middle leading-none inline-block -mt-2 md:-mt-4 mx-2 md:mx-4">•</span> WE MULTIPLY REVENUE
         </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="font-body font-bold text-lg md:text-2xl max-w-3xl mx-auto mb-10 md:mb-14 uppercase bg-pure-white/80 backdrop-blur-sm border-l-4 border-brutal-black pl-6 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-left"
+        >
+          Stop wasting ad spend on pretty designs that don't convert. We build brutal, high-voltage brand weapons that dominate markets and print cash.
+        </motion.p>
 
         {/* CTA & Metrics */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 mt-4 w-full"
+          className="flex flex-col items-center justify-center gap-6 mt-4 w-full"
         >
           <a href="#contact" className="group flex items-center gap-4 bg-neon-green border-4 border-brutal-black px-10 md:px-14 py-5 md:py-6 font-heading font-black text-2xl md:text-4xl brutal-shadow brutal-shadow-active hover:bg-brutal-black hover:text-neon-green transition-all w-full md:w-auto justify-center">
-            GET STARTED
+            CLAIM FREE GROWTH AUDIT
             <ArrowRight className="w-8 h-8 md:w-10 md:h-10 group-hover:translate-x-2 transition-transform" strokeWidth={4} />
           </a>
-          
-          <div className="font-mono text-sm md:text-base text-left border-l-4 border-brutal-black pl-6 py-2 font-bold leading-relaxed bg-pure-white/90 backdrop-blur-sm w-full md:w-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            // IMPACT METRICS:<br />
-            +450% ROI TYPICAL<br />
-            ZERO SOFT SOLUTIONS<br />
-            PURE ADRENALINE
+          <div className="font-mono font-bold text-sm md:text-base uppercase flex items-center gap-2 bg-acid-yellow border-2 border-brutal-black px-4 py-1">
+            <Star className="w-4 h-4 fill-brutal-black" />
+            Trusted by 50+ hyper-growth startups
+            <Star className="w-4 h-4 fill-brutal-black" />
           </div>
         </motion.div>
       </div>

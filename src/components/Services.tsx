@@ -56,9 +56,9 @@ export default function Services() {
             </div>
             <h3 className="font-heading font-black text-3xl md:text-4xl mb-6 uppercase relative z-10">BRAND IDENTITY</h3>
             <ul className="font-mono font-bold text-sm md:text-base space-y-4 mb-8 flex-grow uppercase relative z-10">
-              <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> LOGO DESIGN</li>
-              <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> VOICE & TONE</li>
-              <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> BRAND GUIDES</li>
+              <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> DOMINATE YOUR NICHE</li>
+              <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> CONVERT AT SCALE</li>
+              <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> COMMAND PREMIUM PRICES</li>
             </ul>
           </motion.div>
 
@@ -70,9 +70,9 @@ export default function Services() {
             </div>
             <h3 className="font-heading font-black text-3xl md:text-4xl mb-6 uppercase relative z-10">GROWTH HACKING</h3>
             <ul className="font-mono font-bold text-sm md:text-base space-y-4 mb-8 flex-grow uppercase relative z-10">
-              <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> ACQUISITION</li>
-              <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> CONVERSION</li>
-              <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> DATA MINING</li>
+              <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> SCALE TO 8 FIGURES</li>
+              <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> LOWER CAC BY 40%</li>
+              <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> DATA-DRIVEN DOMINANCE</li>
             </ul>
           </motion.div>
 
@@ -84,9 +84,9 @@ export default function Services() {
             </div>
             <h3 className="font-heading font-black text-3xl md:text-4xl mb-6 uppercase relative z-10">CONTENT CREATION</h3>
             <ul className="font-mono font-bold text-sm md:text-base space-y-4 mb-8 flex-grow uppercase relative z-10">
-              <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> VIDEO PRODUCTION</li>
-              <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> 3D MOTION</li>
-              <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> COPYWRITING</li>
+              <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> VIRAL ENGAGEMENT</li>
+              <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> CULT-LIKE FOLLOWING</li>
+              <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> UNIGNORABLE PRESENCE</li>
             </ul>
           </motion.div>
         </motion.div>

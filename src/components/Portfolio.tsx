@@ -30,8 +30,9 @@ export default function Portfolio() {
               </div>
             </div>
             
-            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-pure-white border-4 border-brutal-black px-4 md:px-6 py-2 md:py-3 font-heading font-black text-xl md:text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-2 transition-transform duration-300 flex items-center gap-3 z-20">
-              PROJECT: NEON GHOST
+            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-pure-white border-4 border-brutal-black px-4 md:px-6 py-2 md:py-3 font-heading font-black text-xl md:text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-2 transition-transform duration-300 flex flex-col gap-1 z-20">
+              <span>PROJECT: NEON GHOST</span>
+              <span className="text-sm md:text-base font-mono text-neon-green bg-brutal-black px-2 py-1 inline-block w-max mt-1">RESULT: +340% ROI</span>
             </div>
           </motion.div>
 
@@ -59,8 +60,9 @@ export default function Portfolio() {
               </div>
             </div>
             
-            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-pure-white border-4 border-brutal-black px-4 md:px-6 py-2 md:py-3 font-heading font-black text-xl md:text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-2 transition-transform duration-300 flex items-center gap-3 z-20">
-              PROJECT: LOGIC BOMB
+            <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-pure-white border-4 border-brutal-black px-4 md:px-6 py-2 md:py-3 font-heading font-black text-xl md:text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-2 transition-transform duration-300 flex flex-col gap-1 z-20">
+              <span>PROJECT: LOGIC BOMB</span>
+              <span className="text-sm md:text-base font-mono text-acid-yellow bg-brutal-black px-2 py-1 inline-block w-max mt-1">RESULT: $2.4M ARR</span>
             </div>
           </motion.div>
         </div>
