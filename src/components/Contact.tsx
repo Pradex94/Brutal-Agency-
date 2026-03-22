@@ -4,7 +4,6 @@ import { fadeUp, buttonInteraction } from '../utils/animations';
 import React, { useState } from 'react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import emailjs from "@emailjs/browser";
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,32 +28,11 @@ export default function Contact() {
     setIsSubmitting(true);
     setError(null);
 
-    const templateParams = {
-      name: formData.name,
-      email: formData.email,
-      website: formData.website,
-      Revenue: formData.Revenue,
-      Bottleneck: formData.Bottleneck
-    };
-
     try {
-      // Send via EmailJS
-      await emailjs.send(
-        "service_fy5c6u8",
-        "template_gl3tmkl",
-        templateParams,
-        "D96FRvDtiBfae5tPL"
-      );
-
-      // Backup to Firestore
-      try {
-        await addDoc(collection(db, 'leads'), {
-          ...formData,
-          createdAt: serverTimestamp()
-        });
-      } catch (dbErr) {
-        console.error('Firestore backup failed:', dbErr);
-      }
+      await addDoc(collection(db, 'leads'), {
+        ...formData,
+        createdAt: serverTimestamp()
+      });
 
       setIsSuccess(true);
       setFormData({
@@ -65,11 +43,10 @@ export default function Contact() {
         Bottleneck: ''
       });
       
-      // Reset success message after 8 seconds
-      setTimeout(() => setIsSuccess(false), 8000);
+      // Reset success message after 5 seconds
+      setTimeout(() => setIsSuccess(false), 5000);
     } catch (err) {
-      console.error('EmailJS Error:', err);
-      alert("FAILED TO SEND. PLEASE TRY AGAIN.");
+      console.error('Error adding document: ', err);
       setError('TRANSMISSION FAILED. TRY AGAIN OR EMAIL US DIRECTLY.');
     } finally {
       setIsSubmitting(false);
@@ -77,7 +54,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="bg-acid-yellow dark:bg-dark-bg py-24 md:py-32 px-4 md:px-8 border-b-4 border-brutal-black relative overflow-hidden transition-colors duration-300">
+    <section id="contact" className="bg-acid-yellow py-24 md:py-32 px-4 md:px-8 border-b-4 border-brutal-black relative overflow-hidden">
       <div className="grid-bg absolute inset-0 z-0"></div>
       <div className="max-w-5xl mx-auto relative z-10">
         
@@ -95,12 +72,12 @@ export default function Contact() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUp}
-          className="bg-pure-white dark:bg-dark-surface border-4 border-brutal-black p-8 md:p-16 lg:p-20 brutal-shadow"
+          className="bg-pure-white border-4 border-brutal-black p-8 md:p-16 lg:p-20 brutal-shadow"
         >
-          <h2 className="font-heading font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter mb-6 leading-none uppercase dark:text-dark-text">
+          <h2 className="font-heading font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter mb-6 leading-none uppercase">
             STOP LOSING MONEY.
           </h2>
-          <p className="font-body font-bold text-lg md:text-2xl mb-10 md:mb-12 max-w-2xl uppercase border-l-4 border-neon-green pl-4 dark:text-dark-text">
+          <p className="font-body font-bold text-lg md:text-2xl mb-10 md:mb-12 max-w-2xl uppercase border-l-4 border-neon-green pl-4">
             Fill out the form below. If you qualify, we'll tear down your current strategy and show you exactly how to scale. No bullshit.
           </p>
           
@@ -114,7 +91,7 @@ export default function Contact() {
                 className="bg-neon-green border-4 border-brutal-black p-8 md:p-12 flex flex-col items-center text-center gap-6 brutal-shadow"
               >
                 <CheckCircle2 className="w-20 h-20 md:w-24 md:h-24" strokeWidth={3} />
-                <h3 className="font-heading font-black text-3xl md:text-5xl uppercase">We’ll contact you soon 🚀</h3>
+                <h3 className="font-heading font-black text-3xl md:text-5xl uppercase">WE'LL CONTACT YOU SOON 🚀</h3>
                 <p className="font-body font-bold text-xl uppercase">YOUR APPLICATION HAS BEEN TRANSMITTED SUCCESSFULLY.</p>
                 <button 
                   onClick={() => setIsSuccess(false)}
@@ -134,7 +111,7 @@ export default function Contact() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                   <div className="flex flex-col group">
-                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors dark:text-dark-text">YOUR NAME</label>
+                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors">YOUR NAME</label>
                     <motion.input 
                       whileFocus={{ scale: 1.01 }}
                       type="text" 
@@ -142,12 +119,12 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow dark:focus:bg-neon-green dark:focus:text-brutal-black transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30 dark:bg-dark-bg dark:text-dark-text" 
+                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30" 
                       placeholder="JOHN DOE" 
                     />
                   </div>
                   <div className="flex flex-col group">
-                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors dark:text-dark-text">YOUR EMAIL</label>
+                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors">YOUR EMAIL</label>
                     <motion.input 
                       whileFocus={{ scale: 1.01 }}
                       type="email" 
@@ -155,7 +132,7 @@ export default function Contact() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow dark:focus:bg-neon-green dark:focus:text-brutal-black transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30 dark:bg-dark-bg dark:text-dark-text" 
+                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30" 
                       placeholder="JOHN@EXAMPLE.COM" 
                     />
                   </div>
@@ -163,25 +140,25 @@ export default function Contact() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                   <div className="flex flex-col group">
-                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors dark:text-dark-text">WEBSITE URL (OPTIONAL)</label>
+                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors">WEBSITE URL (OPTIONAL)</label>
                     <motion.input 
                       whileFocus={{ scale: 1.01 }}
                       type="url" 
                       name="website"
                       value={formData.website}
                       onChange={handleChange}
-                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow dark:focus:bg-neon-green dark:focus:text-brutal-black transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30 dark:bg-dark-bg dark:text-dark-text" 
+                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30" 
                       placeholder="HTTPS://YOURBRAND.COM" 
                     />
                   </div>
                   <div className="flex flex-col group">
-                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors dark:text-dark-text">MONTHLY REVENUE (OPTIONAL)</label>
+                    <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors">MONTHLY REVENUE (OPTIONAL)</label>
                     <motion.select 
                       whileFocus={{ scale: 1.01 }}
                       name="Revenue"
                       value={formData.Revenue}
                       onChange={handleChange}
-                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow dark:focus:bg-neon-green dark:focus:text-brutal-black transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)] focus:-translate-y-1 focus:-translate-x-1 appearance-none bg-pure-white dark:bg-dark-bg dark:text-dark-text"
+                      className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:-translate-x-1 appearance-none bg-pure-white"
                     >
                       <option value="">SELECT REVENUE RANGE</option>
                       <option value="0-10k">$0 - $10,000</option>
@@ -193,14 +170,14 @@ export default function Contact() {
                 </div>
                 
                 <div className="flex flex-col group">
-                  <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors dark:text-dark-text">BIGGEST BOTTLENECK? (OPTIONAL)</label>
+                  <label className="font-mono font-bold text-sm md:text-base mb-2 md:mb-3 uppercase group-focus-within:text-neon-green transition-colors">BIGGEST BOTTLENECK? (OPTIONAL)</label>
                   <motion.textarea 
                     whileFocus={{ scale: 1.01 }}
                     name="Bottleneck"
                     value={formData.Bottleneck}
                     onChange={handleChange}
                     rows={4} 
-                    className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow dark:focus:bg-neon-green dark:focus:text-brutal-black transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30 dark:bg-dark-bg dark:text-dark-text resize-y" 
+                    className="border-4 border-brutal-black p-4 md:p-5 font-body font-bold text-lg md:text-xl focus:outline-none focus:ring-0 focus:bg-acid-yellow transition-all brutal-shadow-sm focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 focus:-translate-x-1 placeholder:text-brutal-black/30 resize-y" 
                     placeholder="TELL US WHAT'S HOLDING YOU BACK..."
                   ></motion.textarea>
                 </div>
@@ -219,7 +196,7 @@ export default function Contact() {
                   type="submit" 
                   className="group w-full flex items-center justify-center gap-4 bg-neon-green border-4 border-brutal-black py-5 md:py-6 font-heading font-black text-2xl md:text-3xl brutal-shadow hover:bg-brutal-black hover:text-neon-green transition-all mt-8 uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'SENDING...' : 'SEND IT'}
+                  {isSubmitting ? 'SENDING...' : 'APPLY FOR FREE AUDIT'}
                   {!isSubmitting && <Send className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform" strokeWidth={3} />}
                 </motion.button>
               </motion.form>

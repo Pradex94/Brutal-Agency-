@@ -1,39 +1,7 @@
-import { Megaphone, Rocket, Video, Target, Cpu, Globe, Zap, ArrowRight } from 'lucide-react';
+import { Megaphone, Rocket, Video } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { fadeUp, staggerContainer, hoverLift } from '../utils/animations';
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-
-const SERVICES = [
-  {
-    title: 'AI LEAD GENERATION',
-    slug: 'ai-lead-generation',
-    icon: <Target className="w-10 h-10" strokeWidth={2.5} />,
-    color: 'bg-neon-green',
-    points: ['AUTOMATED PROSPECTING', 'HYPER-PERSONALIZED OUTREACH', 'REAL-TIME LEAD SCORING']
-  },
-  {
-    title: 'BUSINESS AUTOMATION',
-    slug: 'automation',
-    icon: <Cpu className="w-10 h-10" strokeWidth={2.5} />,
-    color: 'bg-acid-yellow',
-    points: ['WORKFLOW OPTIMIZATION', 'CUSTOM API INTEGRATIONS', 'ERROR-FREE SYNCING']
-  },
-  {
-    title: 'WEB DEVELOPMENT',
-    slug: 'web-development',
-    icon: <Globe className="w-10 h-10" strokeWidth={2.5} />,
-    color: 'bg-pure-white',
-    points: ['CONVERSION-OPTIMIZED', 'LIGHTNING-FAST LOAD TIMES', 'MOBILE-FIRST DESIGN']
-  },
-  {
-    title: 'AI CHATBOTS',
-    slug: 'chatbots',
-    icon: <Zap className="w-10 h-10" strokeWidth={2.5} />,
-    color: 'bg-neon-green',
-    points: ['24/7 INTELLIGENT SUPPORT', 'INSTANT ENGAGEMENT', 'MULTI-PLATFORM DEPLOYMENT']
-  }
-];
 
 export default function Services() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -45,37 +13,37 @@ export default function Services() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 100]);
 
   return (
-    <section id="services" ref={sectionRef} className="relative py-24 md:py-32 px-4 md:px-8 overflow-hidden bg-brutal-white dark:bg-dark-bg transition-colors duration-300">
+    <section ref={sectionRef} className="relative py-24 md:py-32 px-4 md:px-8 overflow-hidden">
       {/* Background Pattern with Parallax */}
       <motion.div 
         style={{ 
           y: backgroundY,
-          backgroundImage: 'radial-gradient(currentColor 2px, transparent 2px)', 
+          backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', 
           backgroundSize: '30px 30px' 
         }}
-        className="absolute inset-0 opacity-5 pointer-events-none text-brutal-black dark:text-dark-text" 
+        className="absolute inset-0 opacity-5 pointer-events-none" 
       ></motion.div>
       
-      <div className="container-custom relative z-10">
+      <div className="max-w-[1400px] mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 md:mb-24 gap-8 md:gap-12">
           <motion.h2 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="font-heading font-black text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter uppercase dark:text-dark-text"
+            className="font-heading font-black text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter uppercase"
           >
-            SYSTEMS THAT<br />
-            <span className="bg-neon-green text-brutal-black px-4 md:px-6 py-1 md:py-2 border-4 border-brutal-black inline-block mt-4 brutal-shadow-sm -rotate-1">SCALE.</span>
+            WHAT WE DO<br />
+            <span className="bg-acid-yellow text-brutal-black px-4 md:px-6 py-1 md:py-2 border-4 border-brutal-black inline-block mt-4 brutal-shadow-sm rotate-2">BEST.</span>
           </motion.h2>
           <motion.p 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="font-body font-bold text-lg md:text-xl lg:text-2xl max-w-lg border-l-4 border-brutal-black dark:border-dark-text pl-6 py-2 uppercase bg-pure-white/80 dark:bg-dark-surface/80 backdrop-blur-sm dark:text-dark-text"
+            className="font-body font-bold text-lg md:text-xl lg:text-2xl max-w-lg border-l-4 border-brutal-black pl-6 py-2 uppercase bg-pure-white/80 backdrop-blur-sm"
           >
-            WE DON'T DO "MARKETING". WE BUILD HIGH-PERFORMANCE GROWTH ENGINES THAT PRINT REVENUE.
+            GENERIC STRATEGIES ARE FOR GENERIC COMPANIES. WE CREATE HIGH-VOLTAGE BRAND WEAPONS.
           </motion.p>
         </div>
 
@@ -84,44 +52,67 @@ export default function Services() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
         >
-          {SERVICES.map((service, index) => (
-            <motion.div 
-              key={index}
-              variants={fadeUp}
-              whileHover="hover"
-              className="bg-pure-white dark:bg-dark-surface border-4 border-brutal-black p-8 md:p-10 brutal-shadow flex flex-col group transition-all duration-300 relative overflow-hidden"
-            >
-              <Link to={`/services/${service.slug}`} className="absolute inset-0 z-20" />
-              <motion.div variants={hoverLift} className="h-full flex flex-col relative z-10">
-                <div className="flex justify-between items-start mb-8">
-                  <div className={`w-20 h-20 ${service.color} border-4 border-brutal-black flex items-center justify-center brutal-shadow-sm group-hover:scale-110 transition-transform duration-300 text-brutal-black`}>
-                    {service.icon}
-                  </div>
-                  <div className="bg-brutal-black text-pure-white p-2 border-2 border-brutal-black group-hover:bg-neon-green group-hover:text-brutal-black transition-colors">
-                    <ArrowRight className="w-6 h-6" />
-                  </div>
-                </div>
-                
-                <h3 className="font-heading font-black text-3xl md:text-5xl mb-6 uppercase leading-none dark:text-dark-text">
-                  {service.title}
-                </h3>
-                
-                <ul className="font-mono font-bold text-sm md:text-lg space-y-4 mb-8 flex-grow uppercase dark:text-dark-text/80">
-                  {service.points.map((point, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <span className="text-neon-green text-2xl">■</span> {point}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="font-mono font-black text-lg underline underline-offset-4 group-hover:text-neon-green transition-colors dark:text-dark-text">
-                  VIEW SYSTEM DETAILS
-                </div>
-              </motion.div>
+          {/* Card 1 */}
+          <motion.div 
+            variants={fadeUp}
+            whileHover="hover"
+            className="bg-pure-white border-4 border-brutal-black p-8 md:p-10 brutal-shadow flex flex-col h-full group transition-all duration-300 relative overflow-hidden"
+          >
+            <motion.div variants={hoverLift} className="h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-neon-green/10 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-neon-green/30"></div>
+              <div className="w-20 h-20 bg-pure-white border-4 border-brutal-black flex items-center justify-center mb-8 brutal-shadow-sm group-hover:bg-neon-green transition-colors duration-300 relative z-10">
+                <Megaphone className="w-10 h-10" strokeWidth={2.5} />
+              </div>
+              <h3 className="font-heading font-black text-3xl md:text-4xl mb-6 uppercase relative z-10">BRAND IDENTITY</h3>
+              <ul className="font-mono font-bold text-sm md:text-base space-y-4 mb-8 flex-grow uppercase relative z-10">
+                <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> DOMINATE YOUR NICHE</li>
+                <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> CONVERT AT SCALE</li>
+                <li className="flex items-center gap-3"><span className="text-neon-green text-2xl">■</span> COMMAND PREMIUM PRICES</li>
+              </ul>
             </motion.div>
-          ))}
+          </motion.div>
+
+          {/* Card 2 */}
+          <motion.div 
+            variants={fadeUp}
+            whileHover="hover"
+            className="bg-pure-white border-4 border-brutal-black p-8 md:p-10 brutal-shadow flex flex-col h-full group transition-all duration-300 relative overflow-hidden"
+          >
+            <motion.div variants={hoverLift} className="h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-acid-yellow/10 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-acid-yellow/30"></div>
+              <div className="w-20 h-20 bg-pure-white border-4 border-brutal-black flex items-center justify-center mb-8 brutal-shadow-sm group-hover:bg-acid-yellow transition-colors duration-300 relative z-10">
+                <Rocket className="w-10 h-10" strokeWidth={2.5} />
+              </div>
+              <h3 className="font-heading font-black text-3xl md:text-4xl mb-6 uppercase relative z-10">GROWTH HACKING</h3>
+              <ul className="font-mono font-bold text-sm md:text-base space-y-4 mb-8 flex-grow uppercase relative z-10">
+                <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> SCALE TO 8 FIGURES</li>
+                <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> LOWER CAC BY 40%</li>
+                <li className="flex items-center gap-3"><span className="text-acid-yellow text-2xl">■</span> DATA-DRIVEN DOMINANCE</li>
+              </ul>
+            </motion.div>
+          </motion.div>
+
+          {/* Card 3 */}
+          <motion.div 
+            variants={fadeUp}
+            whileHover="hover"
+            className="bg-pure-white border-4 border-brutal-black p-8 md:p-10 brutal-shadow flex flex-col h-full group transition-all duration-300 relative overflow-hidden"
+          >
+            <motion.div variants={hoverLift} className="h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-brutal-black/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-brutal-black/10"></div>
+              <div className="w-20 h-20 bg-pure-white border-4 border-brutal-black flex items-center justify-center mb-8 brutal-shadow-sm group-hover:bg-brutal-black group-hover:text-pure-white transition-colors duration-300 relative z-10">
+                <Video className="w-10 h-10" strokeWidth={2.5} />
+              </div>
+              <h3 className="font-heading font-black text-3xl md:text-4xl mb-6 uppercase relative z-10">CONTENT CREATION</h3>
+              <ul className="font-mono font-bold text-sm md:text-base space-y-4 mb-8 flex-grow uppercase relative z-10">
+                <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> VIRAL ENGAGEMENT</li>
+                <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> CULT-LIKE FOLLOWING</li>
+                <li className="flex items-center gap-3"><span className="text-brutal-black text-2xl">■</span> UNIGNORABLE PRESENCE</li>
+              </ul>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
