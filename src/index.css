@@ -1,11 +1,17 @@
 @import "tailwindcss";
 
 @theme {
+  --dark-mode: class;
   --color-neon-green: #2ff801;
   --color-acid-yellow: #eaea00;
   --color-brutal-black: #000000;
   --color-brutal-white: #f6f6f6;
   --color-pure-white: #ffffff;
+  
+  /* Dark Mode Colors */
+  --color-dark-bg: #121212;
+  --color-dark-surface: #1e1e1e;
+  --color-dark-text: #f6f6f6;
 
   --font-heading: "Space Grotesk", sans-serif;
   --font-body: "Work Sans", sans-serif;
@@ -17,9 +23,15 @@
     box-shadow: 8px 8px 0px 0px #000;
     transition: all 0.2s ease;
   }
+  .dark .brutal-shadow {
+    box-shadow: 8px 8px 0px 0px var(--color-neon-green);
+  }
   .brutal-shadow:hover {
     transform: translate(-4px, -4px);
     box-shadow: 12px 12px 0px 0px #000;
+  }
+  .dark .brutal-shadow:hover {
+    box-shadow: 12px 12px 0px 0px var(--color-neon-green);
   }
   .brutal-shadow-active:active {
     transform: translate(8px, 8px);
@@ -28,6 +40,9 @@
   .brutal-shadow-sm {
     box-shadow: 4px 4px 0px 0px #000;
     transition: all 0.2s ease;
+  }
+  .dark .brutal-shadow-sm {
+    box-shadow: 4px 4px 0px 0px var(--color-neon-green);
   }
   .brutal-shadow-sm:hover {
     transform: translate(-2px, -2px);
@@ -39,12 +54,76 @@
         linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   }
+  .dark .grid-bg {
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  }
   .dot-stroke {
     text-shadow: 
         -3px -3px 0 #000,  
          3px -3px 0 #000,
         -3px  3px 0 #000,
          3px  3px 0 #000;
+  }
+  .dark .dot-stroke {
+    text-shadow: 
+        -3px -3px 0 var(--color-neon-green),  
+         3px -3px 0 var(--color-neon-green),
+        -3px  3px 0 var(--color-neon-green),
+         3px  3px 0 var(--color-neon-green);
+  }
+  
+  .container-custom {
+    width: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 768px) {
+    .container-custom {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-custom {
+      padding-left: 4rem;
+      padding-right: 4rem;
+    }
+  }
+}
+
+@layer base {
+  html {
+    font-size: 73%;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    cursor: auto;
+    background-color: var(--color-brutal-white);
+    color: var(--color-brutal-black);
+    text-transform: uppercase;
+    font-family: var(--font-body);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-text);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  p {
+    line-height: 1.6;
   }
 }
 
@@ -55,14 +134,12 @@
 
 .animate-marquee {
   display: inline-block;
-  animation: marquee 15s linear infinite;
+  animation: marquee 30s linear infinite;
 }
 
-body {
-  background-color: var(--color-brutal-white);
-  color: var(--color-brutal-black);
-  text-transform: uppercase;
-  font-family: var(--font-body);
+.animate-marquee-fast {
+  display: inline-block;
+  animation: marquee 15s linear infinite;
 }
 
 ::selection {
