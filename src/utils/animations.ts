@@ -1,4 +1,4 @@
-import { Variants } from 'framer-motion';
+import { Variants } from 'motion/react';
 
 // Premium Easings
 export const EXPO_OUT = [0.22, 1, 0.36, 1] as any;

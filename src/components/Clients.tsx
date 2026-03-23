@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { fadeUp, staggerContainer } from '../utils/animations';
 
 export default function Clients() {

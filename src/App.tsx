@@ -3,43 +3,41 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Marquee from './components/Marquee';
-import Clients from './components/Clients';
-import Services from './components/Services';
-import Portfolio from './components/Portfolio';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import CookieBanner from './components/CookieBanner';
-import CustomCursor from './components/CustomCursor';
-import { motion, AnimatePresence } from 'framer-motion';
-import { pageTransition } from './utils/animations';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { AuthProvider } from './context/AuthContext';
+import Home from './pages/Home';
+import About from './pages/About';
+import Services from './pages/Services';
+import Work from './pages/Work';
+import Brands from './pages/Brands';
+import LoginPage from './pages/Login';
+import SignupPage from './pages/Signup';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
+import FAQ from './pages/FAQ';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   return (
-    <AnimatePresence mode="wait">
-      <motion.div 
-        key="main-content"
-        variants={pageTransition}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        className="min-h-screen flex flex-col relative"
-      >
-        <CustomCursor />
-        <Navbar />
-        <main className="flex-grow">
-          <Hero />
-          <Marquee />
-          <Clients />
-          <Services />
-          <Portfolio />
-          <Contact />
-        </main>
-        <Footer />
-        <CookieBanner />
-      </motion.div>
-    </AnimatePresence>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/work" element={<Work />} />
+            <Route path="/brands" element={<Brands />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsConditions />} />
+            <Route path="/faq" element={<FAQ />} />
+          </Routes>
+        </AnimatePresence>
+      </Router>
+    </AuthProvider>
   );
 }

@@ -11,7 +11,7 @@ export interface CookiePreferences {
   marketing: boolean;
 }
 
-export default function CookieBanner() {
+export default function CookieBanner({ isExternalModalOpen, onExternalModalClose }: { isExternalModalOpen?: boolean, onExternalModalClose?: () => void }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
@@ -19,6 +19,12 @@ export default function CookieBanner() {
     analytics: false,
     marketing: false,
   });
+
+  useEffect(() => {
+    if (isExternalModalOpen) {
+      setIsModalOpen(true);
+    }
+  }, [isExternalModalOpen]);
 
   useEffect(() => {
     const stored = localStorage.getItem('cookie_consent');
@@ -75,7 +81,7 @@ export default function CookieBanner() {
       {!isVisible && (
         <button
           onClick={() => setIsModalOpen(true)}
-          className="fixed bottom-6 left-6 z-40 bg-acid-yellow border-4 border-brutal-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-1 active:translate-x-1 transition-all flex items-center gap-2 font-heading font-black text-sm uppercase"
+          className="fixed bottom-6 left-6 z-40 bg-neon-green border-4 border-brutal-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-1 active:translate-x-1 transition-all flex items-center gap-2 font-heading font-black text-sm uppercase"
         >
           <Settings className="w-5 h-5" strokeWidth={3} />
           <span className="hidden sm:inline">Cookie Settings</span>
@@ -102,7 +108,7 @@ export default function CookieBanner() {
               <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-4">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-pure-white border-4 border-brutal-black px-6 py-3 font-heading font-black text-xl uppercase hover:bg-acid-yellow transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:-translate-y-1 active:shadow-none active:translate-y-1 active:translate-x-1 whitespace-nowrap"
+                  className="bg-pure-white border-4 border-brutal-black px-6 py-3 font-heading font-black text-xl uppercase hover:bg-neon-green transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:-translate-y-1 active:shadow-none active:translate-y-1 active:translate-x-1 whitespace-nowrap"
                 >
                   Customize
                 </button>
@@ -132,6 +138,7 @@ export default function CookieBanner() {
             setIsVisible(true);
           }
           setIsModalOpen(false);
+          onExternalModalClose?.();
         }}
         preferences={preferences}
         onSave={savePreferences}

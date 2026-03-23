@@ -3,6 +3,8 @@ import { ArrowUpRight } from 'lucide-react';
 import { fadeUp, staggerContainer, buttonInteraction, EXPO_OUT } from '../utils/animations';
 import { useRef } from 'react';
 
+import { Link } from 'react-router-dom';
+
 export default function Portfolio() {
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -97,16 +99,19 @@ export default function Portfolio() {
           <h2 className="font-heading font-black text-5xl md:text-7xl lg:text-9xl tracking-tighter mb-10 md:mb-12 text-brutal-black leading-none uppercase relative z-10">
             VIEW OUR ARCHIVES
           </h2>
-          <motion.a 
+          <motion.div 
             variants={buttonInteraction}
             whileHover="hover"
             whileTap="tap"
-            href="#" 
-            className="group flex items-center gap-4 bg-brutal-black text-pure-white border-4 border-brutal-black px-8 md:px-12 py-5 md:py-6 font-heading font-black text-2xl md:text-3xl hover:bg-neon-green hover:text-brutal-black transition-colors brutal-shadow-sm brutal-shadow-active uppercase relative z-10"
           >
-            EXPLORE ALL WORK
-            <ArrowUpRight className="w-8 h-8 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" strokeWidth={3} />
-          </motion.a>
+            <Link 
+              to="/work" 
+              className="group flex items-center gap-4 bg-brutal-black text-pure-white border-4 border-brutal-black px-8 md:px-12 py-5 md:py-6 font-heading font-black text-2xl md:text-3xl hover:bg-neon-green hover:text-brutal-black transition-colors brutal-shadow-sm brutal-shadow-active uppercase relative z-10"
+            >
+              EXPLORE ALL WORK
+              <ArrowUpRight className="w-8 h-8 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" strokeWidth={3} />
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>

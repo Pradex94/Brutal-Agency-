@@ -50,16 +50,7 @@
 
 @layer base {
   body {
-    cursor: auto;
-  }
-  
-  @media (min-width: 768px) {
-    body {
-      cursor: none;
-    }
-    a, button, [role="button"], input, select, textarea {
-      cursor: none;
-    }
+    cursor: default;
   }
 }
 
@@ -78,11 +69,16 @@
   animation: marquee 15s linear infinite;
 }
 
+html {
+  font-size: 73%;
+}
+
 body {
   background-color: var(--color-brutal-white);
   color: var(--color-brutal-black);
   text-transform: uppercase;
   font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 ::selection {

@@ -21,7 +21,7 @@ export default function CookieModal({ isOpen, onClose, preferences, onSave, onAc
   }, [preferences, isOpen]);
 
   const BrutalCheckbox = ({ label, description, checked, onChange, disabled = false }: any) => (
-    <label className={`flex items-start gap-4 p-4 border-4 border-brutal-black ${disabled ? 'opacity-60 bg-brutal-black/5' : 'cursor-pointer hover:bg-acid-yellow/20'} transition-colors`}>
+    <label className={`flex items-start gap-4 p-4 border-4 border-brutal-black ${disabled ? 'opacity-60 bg-brutal-black/5' : 'cursor-pointer hover:bg-neon-green/20'} transition-colors`}>
       <div className="relative flex items-center justify-center mt-1 shrink-0">
         <input
           type="checkbox"
@@ -58,7 +58,7 @@ export default function CookieModal({ isOpen, onClose, preferences, onSave, onAc
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             className="relative w-full max-w-2xl bg-pure-white border-4 border-brutal-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col max-h-[90vh]"
           >
-            <div className="flex items-center justify-between p-6 border-b-4 border-brutal-black bg-acid-yellow">
+            <div className="flex items-center justify-between p-6 border-b-4 border-brutal-black bg-neon-green">
               <h2 className="font-heading font-black text-3xl uppercase">Cookie Preferences</h2>
               <button
                 onClick={onClose}
@@ -93,7 +93,7 @@ export default function CookieModal({ isOpen, onClose, preferences, onSave, onAc
             <div className="p-6 border-t-4 border-brutal-black bg-pure-white flex flex-col sm:flex-row gap-4 justify-end">
               <button
                 onClick={() => onSave(localPrefs)}
-                className="bg-pure-white border-4 border-brutal-black px-6 py-3 font-heading font-black text-xl uppercase hover:bg-acid-yellow transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:-translate-y-1 active:shadow-none active:translate-y-1 active:translate-x-1 w-full sm:w-auto"
+                className="bg-pure-white border-4 border-brutal-black px-6 py-3 font-heading font-black text-xl uppercase hover:bg-neon-green transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:-translate-y-1 active:shadow-none active:translate-y-1 active:translate-x-1 w-full sm:w-auto"
               >
                 Save Preferences
               </button>
