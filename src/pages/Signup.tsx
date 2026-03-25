@@ -24,7 +24,7 @@ export default function SignupPage() {
     setError(null);
     try {
       await signUpWithEmail(email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to sign up');
     } finally {
@@ -37,7 +37,7 @@ export default function SignupPage() {
     setError(null);
     try {
       await signInWithGoogle();
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to sign up with Google');
     } finally {

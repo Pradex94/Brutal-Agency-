@@ -61,8 +61,11 @@ export default function Footer() {
               <Link to="/terms-and-conditions" className="hover:text-pure-white transition-colors">TERMS & CONDITIONS</Link>
               <Link to="/faq" className="hover:text-pure-white transition-colors">FAQ</Link>
             </div>
-            <div className="font-mono font-bold text-sm md:text-base uppercase">
-              ©2026 BRUTAL AGENCY INDUSTRIES. NO RIGHTS RESERVED.
+            <div className="font-mono font-bold text-sm md:text-base uppercase space-y-2">
+              <div>©2026 BRUTAL AGENCY INDUSTRIES. NO RIGHTS RESERVED.</div>
+              <div className="text-xs opacity-60">
+                DESIGNED BY <a href="https://www.nighteye-developers.tech" target="_blank" rel="noopener noreferrer" className="text-neon-green hover:underline decoration-2 underline-offset-4">NIGHTEYE DEVELOPERS</a>
+              </div>
             </div>
           </div>
 

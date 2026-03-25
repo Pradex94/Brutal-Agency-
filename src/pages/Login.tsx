@@ -19,7 +19,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await loginWithEmail(email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to login');
     } finally {
@@ -32,7 +32,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await signInWithGoogle();
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to login with Google');
     } finally {

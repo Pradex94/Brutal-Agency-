@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: leads
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required) - The name of the lead
+    //   - email: string (required, email format) - The email address of the lead
+    //   - website: string (optional) - The website URL of the lead's brand
+    //   - Revenue: string (optional) - The monthly revenue range of the lead
+    //   - Bottleneck: string (optional) - The biggest bottleneck identified by the lead
+    //   - createdAt: timestamp (required) - The timestamp when the lead was submitted
+    //   - status: string (optional) - The status of the lead (new, contacted, closed)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "pradexbisla1994@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidEmail(email) {
+      return email is string &&
+        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll(['name', 'email', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             isValidEmail(data.email) &&
+             data.createdAt is timestamp &&
+             (!('website' in data) || (data.website is string && data.website.size() < 200)) &&
+             (!('Revenue' in data) || (data.Revenue is string && data.Revenue.size() < 100)) &&
+             (!('Bottleneck' in data) || (data.Bottleneck is string && data.Bottleneck.size() < 1000)) &&
+             (!('status' in data) || (data.status is string && data.status in ['new', 'contacted', 'closed'])) &&
+             (!('userId' in data) || (data.userId is string && data.userId.size() < 128));
+    }
+
+    function isValidActivity(data) {
+      return data.keys().hasAll(['userId', 'action', 'createdAt']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.action is string && data.action.size() > 0 &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidAutomation(data) {
+      return data.keys().hasAll(['userId']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             (!('whatsapp' in data) || (data.whatsapp in ['active', 'inactive'])) &&
+             (!('email' in data) || (data.email in ['active', 'inactive'])) &&
+             (!('chatbot' in data) || (data.chatbot in ['active', 'inactive']));
+    }
+
+    function isValidLeadRequest(data) {
+      return data.keys().hasAll(['userId', 'businessType', 'location', 'status', 'createdAt']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.businessType is string && data.businessType.size() > 0 &&
+             data.location is string && data.location.size() > 0 &&
+             data.status in ['pending', 'running', 'completed', 'failed'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'uid', 'createdAt']) &&
+             data.email is string && isValidEmail(data.email) &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() < 128 &&
+             data.createdAt is timestamp &&
+             (!('role' in data) || (data.role is string && data.role in ['admin', 'user']));
+    }
+
+    function isValidClientLead(data) {
+      return data.keys().hasAll(['name', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 200 &&
+             (!('address' in data) || (data.address is string && data.address.size() < 500)) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 50)) &&
+             (!('website' in data) || (data.website is string && data.website.size() < 500)) &&
+             (!('rating' in data) || (data.rating is number)) &&
+             (!('status' in data) || (data.status is string && data.status in ['new', 'contacted', 'closed'])) &&
+             (!('source' in data) || (data.source is string && data.source.size() < 100)) &&
+             (data.createdAt is string || data.createdAt is timestamp) &&
+             (!('userId' in data) || (data.userId is string && data.userId.size() < 128));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /leads/{leadId} {
+      // Allow anyone to submit a lead (public contact form)
+      allow create: if isValidLead(request.resource.data);
+      
+      // Only admins can read, update, or delete leads
+      // Users can read their own leads
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /activities/{activityId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidActivity(request.resource.data);
+    }
+
+    match /automations/{automationId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create, update: if isAuthenticated() && isValidAutomation(request.resource.data);
+    }
+
+    match /lead_requests/{requestId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidLeadRequest(request.resource.data);
+      // Allow system to update status (in a real app, this would be more restricted)
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && isValidLeadRequest(request.resource.data);
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      
+      // Allow users to create their own profile on first login
+      // But only admins can set the 'admin' role (unless it's the hardcoded admin)
+      allow create: if isAuthenticated() && request.auth.uid == userId && 
+                    isValidUser(request.resource.data) &&
+                    (request.resource.data.role == 'user' || isAdmin());
+                    
+      allow update: if isAdmin();
+    }
+
+    match /client-leads/{leadId} {
+      // Allow unauthenticated writes from n8n (validated strictly)
+      allow create: if isValidClientLead(request.resource.data);
+      
+      // Only the owner or admin can read/update/delete
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

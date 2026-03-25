@@ -6,6 +6,9 @@
   --color-brutal-black: #000000;
   --color-brutal-white: #f6f6f6;
   --color-pure-white: #ffffff;
+  --color-dark-bg: #0a0a0a;
+  --color-dark-surface: #1a1a1a;
+  --color-dark-text: #f6f6f6;
 
   --font-heading: "Space Grotesk", sans-serif;
   --font-body: "Work Sans", sans-serif;

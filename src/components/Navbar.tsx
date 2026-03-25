@@ -12,6 +12,8 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const ADMIN_EMAIL = "pradexbisla1994@gmail.com";
+
   const menuItems = [
     { name: 'WORK', path: '/work' },
     { name: 'SERVICES', path: '/services' },
@@ -75,6 +77,24 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: EXPO_OUT }}
         className="hidden md:flex items-center gap-8 lg:gap-12 font-heading font-bold text-lg"
       >
+        {user?.email === ADMIN_EMAIL && (
+          <Link 
+            to="/admin" 
+            className="relative group px-2 py-1 text-neon-green"
+          >
+            <span className="relative z-10">ADMIN</span>
+            <span className="absolute bottom-0 left-0 w-0 h-1 bg-brutal-black group-hover:w-full group-hover:h-full group-hover:bg-brutal-black transition-all -z-0"></span>
+          </Link>
+        )}
+        {user && (
+          <Link 
+            to="/dashboard" 
+            className="relative group px-2 py-1"
+          >
+            <span className="relative z-10">DASHBOARD</span>
+            <span className="absolute bottom-0 left-0 w-0 h-1 bg-brutal-black group-hover:w-full group-hover:h-full group-hover:bg-neon-green transition-all -z-0"></span>
+          </Link>
+        )}
         {menuItems.map((item) => (
           <Link 
             key={item.name}
@@ -149,6 +169,24 @@ export default function Navbar() {
             transition={{ duration: 0.5, ease: EXPO_OUT }}
             className="absolute top-full left-0 w-full bg-pure-white border-b-4 border-brutal-black flex flex-col font-heading font-bold text-2xl md:hidden overflow-hidden"
           >
+            {user?.email === ADMIN_EMAIL && (
+              <Link 
+                to="/admin" 
+                className="p-6 border-b-4 border-brutal-black bg-neon-green hover:pl-8 transition-all"
+                onClick={() => setIsOpen(false)}
+              >
+                ADMIN CRM
+              </Link>
+            )}
+            {user && (
+              <Link 
+                to="/dashboard" 
+                className="p-6 border-b-4 border-brutal-black hover:bg-neon-green hover:pl-8 transition-all"
+                onClick={() => setIsOpen(false)}
+              >
+                DASHBOARD
+              </Link>
+            )}
             {menuItems.map((item) => (
               <Link 
                 key={item.name} 
