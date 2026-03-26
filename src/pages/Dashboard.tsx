@@ -95,11 +95,13 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return;
 
-    const leadsQuery = query(
-      collection(db, 'leads'),
-      where('userId', '==', user.uid),
-      orderBy('createdAt', 'desc')
-    );
+    const leadsQuery = user?.email === "pradexbisla1994@gmail.com" 
+      ? collection(db, 'leads')
+      : query(
+          collection(db, 'leads'),
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
 
     const activitiesQuery = query(
       collection(db, 'activities'),
@@ -119,20 +121,30 @@ export default function Dashboard() {
       limit(1)
     );
 
-    const clientLeadsQuery = query(
-      collection(db, 'client-leads'),
-      where('userId', '==', user.uid),
-      orderBy('createdAt', 'desc')
-    );
+    const isAdminUser = user?.email?.toLowerCase() === "pradexbisla1994@gmail.com";
+    console.log("Dashboard: User email:", user?.email, "isAdmin:", isAdminUser);
+
+    const clientLeadsQuery = isAdminUser
+      ? query(collection(db, 'client_leads'), orderBy('createdAt', 'desc'))
+      : query(
+          collection(db, 'client_leads'),
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
 
     const unsubLeads = onSnapshot(leadsQuery, (snapshot) => {
+      console.log(`Fetched ${snapshot.size} manual leads`);
       setLeads(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Lead)));
       setLoading(false);
     }, (err) => handleFirestoreError(err, OperationType.LIST, 'leads'));
 
     const unsubClientLeads = onSnapshot(clientLeadsQuery, (snapshot) => {
+      console.log(`Fetched ${snapshot.size} automated leads for query:`, clientLeadsQuery);
       setClientLeads(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ClientLead)));
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'client-leads'));
+    }, (err) => {
+      console.error("Error fetching client leads:", err);
+      handleFirestoreError(err, OperationType.LIST, 'client_leads');
+    });
 
     const unsubActivities = onSnapshot(activitiesQuery, (snapshot) => {
       setActivities(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ActivityLog)));
@@ -158,6 +170,10 @@ export default function Dashboard() {
       unsubRequests();
     };
   }, [user]);
+
+  useEffect(() => {
+    console.log("Dashboard: clientLeads state updated:", clientLeads);
+  }, [clientLeads]);
 
   const handleStartGeneration = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -418,53 +434,68 @@ export default function Dashboard() {
               <Users className="w-8 h-8" /> AUTOMATED LEADS
             </h2>
             <div className="bg-pure-white border-4 border-brutal-black brutal-shadow overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[800px]">
+              <table className="w-full text-left border-collapse min-w-[1200px]">
                 <thead>
                   <tr className="bg-brutal-black text-pure-white font-mono text-sm uppercase">
                     <th className="p-4 border-r-2 border-pure-white/20">NAME</th>
-                    <th className="p-4 border-r-2 border-pure-white/20">CONTACT</th>
-                    <th className="p-4 border-r-2 border-pure-white/20">DETAILS</th>
+                    <th className="p-4 border-r-2 border-pure-white/20">PHONE / WEBSITE</th>
+                    <th className="p-4 border-r-2 border-pure-white/20">ADDRESS</th>
+                    <th className="p-4 border-r-2 border-pure-white/20">RATING</th>
+                    <th className="p-4 border-r-2 border-pure-white/20">SOURCE</th>
+                    <th className="p-4 border-r-2 border-pure-white/20">USER ID</th>
                     <th className="p-4 border-r-2 border-pure-white/20">STATUS</th>
-                    <th className="p-4">DATE</th>
+                    <th className="p-4">CREATED AT</th>
                   </tr>
                 </thead>
                 <tbody className="font-body font-bold text-base uppercase">
                   {clientLeads.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-12 text-center text-brutal-black/40">
+                      <td colSpan={8} className="p-12 text-center text-brutal-black/40">
                         NO AUTOMATED LEADS DETECTED YET.
                       </td>
                     </tr>
                   ) : (
                     clientLeads.map((lead) => (
                       <tr key={lead.id} className="border-b-4 border-brutal-black hover:bg-acid-yellow/10 transition-colors">
-                        <td className="p-4 border-r-4 border-brutal-black">{lead.name}</td>
+                        <td className="p-4 border-r-4 border-brutal-black font-heading text-sm leading-tight">{lead.name}</td>
                         <td className="p-4 border-r-4 border-brutal-black">
-                          <div className="flex flex-col">
+                          <div className="flex flex-col gap-1">
                             <span className="text-sm">{lead.phone || 'NO PHONE'}</span>
                             {lead.website && (
-                              <a href={lead.website} target="_blank" rel="noopener noreferrer" className="text-xs font-mono underline flex items-center gap-1 mt-1">
-                                WEBSITE <ExternalLink className="w-3 h-3" />
+                              <a href={lead.website} target="_blank" rel="noopener noreferrer" className="text-[10px] font-mono underline flex items-center gap-1 text-blue-600">
+                                VISIT SITE <ExternalLink className="w-2 h-2" />
                               </a>
                             )}
                           </div>
                         </td>
                         <td className="p-4 border-r-4 border-brutal-black">
-                          <div className="text-xs space-y-1">
-                            {lead.address && <div className="truncate max-w-[200px]" title={lead.address}>ADDR: {lead.address}</div>}
-                            {lead.rating && <div>RATING: {lead.rating} ⭐</div>}
-                            {lead.source && <div>SRC: {lead.source}</div>}
+                          <div className="text-[10px] leading-tight max-w-[200px] break-words">
+                            {lead.address || 'N/A'}
                           </div>
                         </td>
+                        <td className="p-4 border-r-4 border-brutal-black text-center">
+                          <div className="flex items-center justify-center gap-1">
+                            <span className="text-lg">{lead.rating || '0'}</span>
+                            <span className="text-acid-yellow text-xl">★</span>
+                          </div>
+                        </td>
+                        <td className="p-4 border-r-4 border-brutal-black font-mono text-[10px]">
+                          {lead.source || 'N/A'}
+                        </td>
+                        <td className="p-4 border-r-4 border-brutal-black font-mono text-[10px] opacity-50">
+                          {lead.userId || 'N/A'}
+                        </td>
                         <td className="p-4 border-r-4 border-brutal-black">
-                          <span className={`${getStatusColor(lead.status as any)} border-2 border-brutal-black px-2 py-1 text-xs`}>
+                          <span className={`${getStatusColor(lead.status as any)} border-2 border-brutal-black px-2 py-1 text-[10px] whitespace-nowrap`}>
                             {lead.status || 'NEW'}
                           </span>
                         </td>
-                        <td className="p-4 font-mono text-xs">
-                          {typeof lead.createdAt === 'string' 
-                            ? new Date(lead.createdAt).toLocaleDateString() 
-                            : lead.createdAt?.toDate().toLocaleDateString()}
+                        <td className="p-4 font-mono text-[10px] whitespace-nowrap">
+                          {lead.createdAt 
+                            ? (typeof lead.createdAt === 'string' 
+                              ? new Date(lead.createdAt).toLocaleDateString() 
+                              : lead.createdAt.toDate().toLocaleDateString())
+                            : 'N/A'}
                         </td>
                       </tr>
                     ))

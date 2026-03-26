@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { initializeApp } from "firebase/app";
-import { initializeFirestore, collection, addDoc } from "firebase/firestore";
+import { initializeFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,31 +24,39 @@ async function startServer() {
 
   // Webhook for n8n to save leads directly to Firestore
   app.post("/api/webhook/save-lead", async (req, res) => {
+    console.log("Webhook /api/webhook/save-lead received data:", JSON.stringify(req.body, null, 2));
     try {
       const leadData = req.body;
       
       if (!leadData.name) {
+        console.error("Webhook error: Lead name is required");
         return res.status(400).json({ error: "Lead name is required" });
       }
 
       if (!leadData.userId) {
+        console.error("Webhook error: userId is required");
         return res.status(400).json({ error: "userId is required for the lead to show on your dashboard" });
       }
 
       // Prepare data for Firestore
       const dataToSave = {
         ...leadData,
-        createdAt: new Date().toISOString(), // Use string format for better reliability on server-side
+        createdAt: Timestamp.now(), // Use Firestore Timestamp for consistency with frontend
         status: leadData.status || 'new'
       };
 
-      const docRef = await addDoc(collection(db, "client-leads"), dataToSave);
+      const docRef = await addDoc(collection(db, "client_leads"), dataToSave);
       console.log("Lead saved successfully with ID:", docRef.id);
       res.json({ success: true, id: docRef.id });
     } catch (error) {
       console.error("Error saving lead to Firestore:", error);
       res.status(500).json({ error: "Failed to save lead to database. Check server logs." });
     }
+  });
+
+  // Health check for the webhook
+  app.get("/api/webhook/save-lead", (req, res) => {
+    res.json({ status: "Webhook endpoint is active. Use POST to save leads." });
   });
 
   // Proxy endpoint to avoid Mixed Content (HTTPS -> HTTP) issues

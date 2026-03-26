@@ -29,7 +29,7 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() &&
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "pradexbisla1994@gmail.com" && request.auth.token.email_verified == true));
+          request.auth.token.email == "pradexbisla1994@gmail.com");
     }
 
     function isValidEmail(email) {
@@ -137,7 +137,7 @@ service cloud.firestore {
       allow update: if isAdmin();
     }
 
-    match /client-leads/{leadId} {
+    match /client_leads/{leadId} {
       // Allow unauthenticated writes from n8n (validated strictly)
       allow create: if isValidClientLead(request.resource.data);
       
