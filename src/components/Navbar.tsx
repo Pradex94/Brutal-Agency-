@@ -8,7 +8,7 @@ import { logoutUser } from '../lib/firebaseAuth';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isPaid } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -20,6 +20,10 @@ export default function Navbar() {
     { name: 'ABOUT', path: '/about' },
     { name: 'BRANDS', path: '/brands' },
   ];
+
+  if (isPaid) {
+    menuItems.unshift({ name: 'SEO', path: '/seo' });
+  }
 
   const handleHireUs = (e: React.MouseEvent) => {
     e.preventDefault();

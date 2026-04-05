@@ -5,8 +5,13 @@ import React, { useState } from 'react';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { storeSeoReport, SeoReportData } from '../services/seoService';
 
 export default function Contact() {
+  const navigate = useNavigate();
+  const { user: authUser } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,41 +35,114 @@ export default function Contact() {
     setError(null);
 
     try {
-      // Send email notification via EmailJS
-      // Using provided keys as defaults, but allowing environment variable overrides
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fy5c6u8',
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_gl3tmkl',
-        {
-          // Sending multiple variations of keys to ensure compatibility with the template
-          name: formData.name,
-          email: formData.email,
-          from_name: formData.name,
-          from_email: formData.email,
-          website: formData.website || 'NOT PROVIDED',
-          revenue: formData.Revenue || 'NOT PROVIDED',
-          bottleneck: formData.Bottleneck || 'NOT PROVIDED',
-          // Capitalized versions just in case
-          Name: formData.name,
-          Email: formData.email,
-          Website: formData.website || 'NOT PROVIDED',
-          Revenue: formData.Revenue || 'NOT PROVIDED',
-          Bottleneck: formData.Bottleneck || 'NOT PROVIDED',
-          reply_to: formData.email,
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'D96FRvDtiBfae5tPL'
-      );
-
+      console.log('Step 1: Saving lead to Firestore...');
       const path = 'leads';
       try {
         await addDoc(collection(db, 'leads'), {
           ...formData,
+          userId: authUser?.uid || null,
           createdAt: serverTimestamp()
         });
       } catch (err) {
         handleFirestoreError(err, OperationType.CREATE, path);
       }
 
+      console.log('Step 2: Triggering n8n audit webhook...');
+      const webhookResponse = await fetch('/api/audit-webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!webhookResponse.ok) {
+        throw new Error('SERVER ISSUE, PLEASE TRY AGAIN.');
+      }
+
+      const rawData = await webhookResponse.json();
+      console.log('RAW RESPONSE:', rawData);
+
+      // Handle ALL response formats safely
+      const data = Array.isArray(rawData) ? rawData[0] : rawData;
+
+      if (data.message === 'Workflow was started') {
+        throw new Error('INVALID AUDIT RESPONSE: WORKFLOW IS RUNNING ASYNCHRONOUSLY. PLEASE CONFIGURE N8N TO RESPOND ON FINISH.');
+      }
+
+      const audit = data.audit;
+      const user = data.body;
+
+      if (!audit || !audit.weaknesses) {
+        console.error('DEBUG: Audit data missing from response:', data);
+        throw new Error('INVALID AUDIT RESPONSE: AUDIT DATA MISSING.');
+      }
+
+      // Store in Firestore if user is logged in
+      if (authUser) {
+        console.log('Step 3: Storing SEO report in Firestore...');
+        const seoData: SeoReportData = {
+          website: formData.website || data.website || 'UNKNOWN',
+          audit: {
+            overall_seo_score: audit.lead_score || audit.overall_seo_score || 0,
+            seo_grade: audit.seo_grade || 'N/A',
+            lost_revenue: audit.lost_revenue || 0,
+            weaknesses: audit.weaknesses || [],
+            warnings: audit.warnings || []
+          },
+          on_page: data.on_page || {
+            title: 'N/A',
+            meta_description: 'N/A',
+            h1_count: 0,
+            h2_count: 0,
+            images_total: 0,
+            images_missing_alt: 0,
+            ssl: false,
+            structured_data: false
+          },
+          pagespeed: data.pagespeed || {
+            mobile_performance: 0,
+            mobile_seo: 0,
+            desktop_performance: 0,
+            desktop_seo: 0
+          },
+          indexation: data.indexation || {
+            total_indexed_pages: 0
+          },
+          recommendations: data.recommendations || []
+        };
+        await storeSeoReport(authUser.uid, seoData);
+      }
+
+      // 5. Convert weaknesses array into bullet string
+      const formattedWeaknesses = Array.isArray(audit.weaknesses) 
+        ? audit.weaknesses.map((w: string) => `• ${w}`).join('\n') 
+        : (audit.weaknesses || '• NONE IDENTIFIED');
+
+      // 6. Prepare template params
+      const templateParams = {
+        to_email: user?.email || formData.email,
+        name: user?.name || formData.name,
+        weaknesses: formattedWeaknesses,
+        lost_revenue: audit.lost_revenue || 0,
+        lead_score: audit.lead_score || audit.overall_seo_score || 0,
+        attack_plan: audit.attack_plan || 'CONTACT US FOR DETAILS',
+        website: formData.website || 'NOT PROVIDED',
+        revenue: formData.Revenue || 'NOT PROVIDED',
+        bottleneck: formData.Bottleneck || 'NOT PROVIDED',
+        reply_to: formData.email,
+      };
+
+      console.log('Step 4: Sending EmailJS...');
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_fy5c6u8',
+        'template_ayccaxo',
+        templateParams,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'D96FRvDtiBfae5tPL'
+      );
+
+      console.log('Step 5: Workflow complete.');
+      
+      localStorage.setItem('last_audit', JSON.stringify({ audit, body: user || { name: formData.name, email: formData.email } }));
+      
       setIsSuccess(true);
       setFormData({
         name: '',
@@ -74,11 +152,12 @@ export default function Contact() {
         Bottleneck: ''
       });
       
-      // Reset success message after 5 seconds
-      setTimeout(() => setIsSuccess(false), 5000);
+      setTimeout(() => {
+        navigate('/results');
+      }, 1500);
     } catch (err) {
-      console.error('Error adding document: ', err);
-      setError('TRANSMISSION FAILED. TRY AGAIN OR EMAIL US DIRECTLY.');
+      console.error('Workflow Error:', err);
+      setError(err instanceof Error ? err.message : 'TRANSMISSION FAILED. TRY AGAIN OR EMAIL US DIRECTLY.');
     } finally {
       setIsSubmitting(false);
     }

@@ -2,8 +2,10 @@ import { motion } from 'framer-motion';
 import { fadeUp } from '../utils/animations';
 import { Link } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Footer() {
+  const { isPaid } = useAuth();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -36,6 +38,7 @@ export default function Footer() {
             <div className="space-y-6">
               <h3 className="font-mono font-black text-neon-green text-sm uppercase tracking-widest">NAVIGATION</h3>
               <ul className="space-y-4 font-heading font-bold text-xl md:text-2xl uppercase">
+                {isPaid && <li><Link to="/seo" className="text-neon-green hover:text-pure-white transition-colors">SEO DASHBOARD</Link></li>}
                 <li><Link to="/work" className="hover:text-neon-green transition-colors">WORK</Link></li>
                 <li><Link to="/services" className="hover:text-neon-green transition-colors">SERVICES</Link></li>
                 <li><Link to="/about" className="hover:text-neon-green transition-colors">ABOUT</Link></li>

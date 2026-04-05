@@ -1,5 +1,6 @@
 import PageLayout from '../components/PageLayout';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { fadeUp, staggerContainer } from '../utils/animations';
 import { Megaphone, Rocket, Video, Target, Zap, Shield } from 'lucide-react';
 
@@ -24,6 +25,14 @@ const serviceDetails = [
     desc: "IF YOUR CONTENT ISN'T UNIGNORABLE, IT DOESN'T EXIST. WE CREATE HIGH-VOLTAGE MEDIA THAT STOPS THE SCROLL AND STARTS THE REVOLUTION.",
     features: ["VIRAL ENGAGEMENT", "UNSTOPPABLE PRESENCE", "MEDIA DOMINATION"],
     color: "bg-pure-white"
+  },
+  {
+    icon: <Target className="w-12 h-12" />,
+    title: "SEO DOMINATION",
+    desc: "WE DON'T JUST RANK. WE DOMINATE. OUR AGGRESSIVE SEO STRATEGY CRUSHES YOUR COMPETITION AND RECOVERS LOST REVENUE WITH RUTHLESS PRECISION.",
+    features: ["REVENUE RECOVERY", "COMPETITOR DESTRUCTION", "SEARCH DOMINANCE"],
+    color: "bg-neon-green",
+    link: "/seo"
   }
 ];
 
@@ -90,6 +99,14 @@ export default function ServicesPage() {
                     </span>
                   ))}
                 </div>
+                {service.link && (
+                  <Link 
+                    to={service.link}
+                    className={`inline-flex items-center gap-2 border-4 border-brutal-black px-8 py-4 font-heading font-black text-xl uppercase brutal-shadow hover:translate-x-1 hover:-translate-y-1 transition-all ${index % 2 === 1 ? 'bg-neon-green text-brutal-black' : 'bg-brutal-black text-pure-white'}`}
+                  >
+                    ACCESS TOOL <Zap className="w-6 h-6" />
+                  </Link>
+                )}
               </div>
             </motion.div>
           ))}

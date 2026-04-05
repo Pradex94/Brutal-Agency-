@@ -7,6 +7,9 @@ import { Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home';
+import AuditResults from './pages/AuditResults';
+import Payment from './pages/Payment';
+import SeoDashboard from './pages/SeoDashboard';
 import About from './pages/About';
 import Services from './pages/Services';
 import Work from './pages/Work';
@@ -28,6 +31,16 @@ export default function App() {
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/results" element={<AuditResults />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route 
+            path="/seo" 
+            element={
+              <ProtectedRoute>
+                <SeoDashboard />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/work" element={<Work />} />

@@ -27,9 +27,11 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isAuthenticated() &&
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          request.auth.token.email == "pradexbisla1994@gmail.com");
+      return isAuthenticated() && (
+        request.auth.token.email == "pradexbisla1994@gmail.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
     }
 
     function isValidEmail(email) {
@@ -144,6 +146,19 @@ service cloud.firestore {
       // Only the owner or admin can read/update/delete
       allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
       allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+    }
+
+    match /seo_reports/{reportId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      
+      match /{subcollection}/{docId} {
+        allow read: if isAuthenticated() && (
+          get(/databases/$(database)/documents/seo_reports/$(reportId)).data.userId == request.auth.uid || 
+          isAdmin()
+        );
+        allow write: if isAuthenticated() && get(/databases/$(database)/documents/seo_reports/$(reportId)).data.userId == request.auth.uid;
+      }
     }
 
     // Default deny

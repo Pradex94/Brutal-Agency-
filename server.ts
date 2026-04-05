@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { initializeApp } from "firebase/app";
-import { initializeFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,9 +12,7 @@ const __dirname = path.dirname(__filename);
 // Initialize Firebase on the server
 const firebaseConfig = JSON.parse(fs.readFileSync("./firebase-applet-config.json", "utf-8"));
 const firebaseApp = initializeApp(firebaseConfig);
-const db = initializeFirestore(firebaseApp, { 
-  databaseId: firebaseConfig.firestoreDatabaseId 
-});
+const db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
 
 async function startServer() {
   const app = express();
@@ -98,6 +96,50 @@ async function startServer() {
       console.error("Error proxying to n8n:", error);
       res.status(500).json({ 
         error: "Failed to communicate with lead generation service",
+        message: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // Proxy endpoint for audit form webhook
+  app.post("/api/audit-webhook", async (req, res) => {
+    console.log("Received audit form submission:", req.body);
+    try {
+      const webhookUrl = "http://34.93.25.87:5678/webhook/seo-audit-engine";
+      console.log(`Forwarding audit form to n8n: ${webhookUrl}`);
+      
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(req.body)
+      });
+
+      console.log(`n8n audit response status: ${response.status} ${response.statusText}`);
+
+      const responseText = await response.text();
+      console.log("n8n audit raw response:", responseText);
+
+      if (!response.ok) {
+        return res.status(response.status).json({ 
+          error: `n8n responded with ${response.status}`,
+          details: responseText 
+        });
+      }
+
+      try {
+        const data = JSON.parse(responseText);
+        res.json(data);
+      } catch (e) {
+        console.error("Failed to parse n8n response as JSON:", responseText);
+        // If it's not JSON but the response was OK, return it as a status
+        res.json({ status: 'ok', raw: responseText });
+      }
+    } catch (error) {
+      console.error("Error proxying audit form to n8n:", error);
+      res.status(500).json({ 
+        error: "Failed to communicate with audit service",
         message: error instanceof Error ? error.message : String(error)
       });
     }
